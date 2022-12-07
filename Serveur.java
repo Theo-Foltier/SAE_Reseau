@@ -17,47 +17,47 @@ public class Serveur {
 		final PrintWriter out;
 		final Scanner sc = new Scanner(System.in);
 
-		try {
-			serveurSocket = new ServerSocket(5000);
-			clientSocket = serveurSocket.accept();
-			out = new PrintWriter(clientSocket.getOutputStream());
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			Thread envoi = new Thread(new Runnable() {
-				String msg;
+		System.out.println(" _________________________________");
+		System.out.println("|            Bienvenue            |");
+		System.out.println("|_________________________________|");
+		System.out.println("");
 
-				@Override
-				public void run() {
-					while (true) {
-						msg = sc.nextLine();
-						out.println(msg);
-						out.flush();
-					}
-				}
-			});
-			envoi.start();
 
-			Thread recevoir = new Thread(new Runnable() {
-				String msg;
 
-				@Override
-				public void run() {
-					try {
-						msg = in.readLine();
+		System.out.println("Veuillez entrer votre pseudo:");
+		Scanner nomSc = new Scanner(System.in);
+		String nom = nomSc.nextLine();
+		if(nom != null){
+			try {
+				serveurSocket = new ServerSocket(5000);
+				clientSocket = serveurSocket.accept();
+				out = new PrintWriter(clientSocket.getOutputStream());
+				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-						while (msg != null) {
-							System.out.println("Client : " + msg);
+				Thread recevoir = new Thread(new Runnable() {
+					String msg;
+
+					@Override
+					public void run() {
+						try {
 							msg = in.readLine();
-						}
 
-						System.out.println("Client déconecté");
-					} catch (IOException e) {
-						e.printStackTrace();
+							while (msg != null) {
+								System.out.println(msg);
+								msg = in.readLine();
+							}
+
+							System.out.println("Client déconecté");
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
-				}
-			});
-			recevoir.start();
-		} catch (IOException e) {
-			e.printStackTrace();
+				});
+				recevoir.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
